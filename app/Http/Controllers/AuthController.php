@@ -11,7 +11,7 @@ class AuthController extends Controller
 {
     function __construct(User $user)
     {
-        $this->user=$user;
+        $this->userModel=$user;
     }
 
     protected function Response($data=null,$msg=null,$statusCode=404,$type=null,$token=null){
@@ -25,14 +25,20 @@ class AuthController extends Controller
             return response()->json($res);
     }
 
+    protected function session(){
+        return Auth::user();
+     }
+
     public function Register(
         \App\Http\Requests\registerRequest $request
         )
     {
             $datas=$request->validated();
+            $datas['user_conections']='offline';
+            $datas['score']=0;
             $datas['password'] = Hash::make($datas['password']);
             // Hash::make($datas->password);
-        $inserted=$this->user::create($datas);
+        $inserted=$this->userModel::create($datas);
         if(!$inserted){
             return $this->Response(null,'register failed',409);
         }
@@ -46,12 +52,14 @@ class AuthController extends Controller
         if(!Auth::attempt($request->validated())){
            return $this->Response(null,'username atau password salah',403);
         }
-        $token=Auth::user()->createToken('login')->accessToken;
+        $token=$this->session()->createToken('login')->accessToken;
+            $this->userModel::find($this->session()->id)::update(['user_conections'=>'online']);
        return $this->Response(null,'login succesfully',200,'Bearer',$token);
     }
 
     public function Logout()
     {
+        $this->userModel::find($this->session()->id)::update(['user_conections'=>'offline']);
         Auth::user()->token()->revoke();
         return $this->Response(null,'logout succesfully',200);
     }

@@ -14,15 +14,25 @@ class DatabaseSeeder extends Seeder
      *
      * @return void
      */
-   
+        
+
     public function run()
     {
+        $randomize=fn(array $arrayData)=>$arrayData[array_rand($arrayData)];
         // \App\Models\User::factory(10)->create();
-
-        DB::table('users')->insert([
-            'username' =>'admin',
-            'email' =>'admin@gmail.com',
-            'password' => Hash::make('admin'),
-        ]);
+        for ($i=0; $i <= 10; $i++) {
+            DB::table('users')->insert([
+                'username' =>"admin{$i}",
+                'name' =>"admin{$i}",
+                'score' =>0,
+                'user_conections' =>'offline',
+                'gender' =>$randomize(['male','female']),
+                'status' =>$randomize(['i am ok thank kyu!!','better run!','runing into the night']),
+                'country' =>$randomize(['indonesia','japan','rusia','malaysia','china','north korea']),
+                'avatar' =>null,
+                'email' =>"admin{$i}@gmail.com",
+                'password' => Hash::make("admin{$i}"),
+            ]);
+        }
     }
 }
