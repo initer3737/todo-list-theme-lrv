@@ -13,7 +13,7 @@ class AuthController extends Controller
     {
         $this->userModel=$user;
     }
-
+            // function helper start
     protected function Response($data=null,$msg=null,$statusCode=404,$type=null,$token=null){
         $res=[
             'status'=>$statusCode,
@@ -25,15 +25,28 @@ class AuthController extends Controller
             return response()->json($res);
     }
 
-    protected function session(){
+    private function session(){
         return Auth::user();
      }
+
+    private function loginAttempt($credentials){
+       return Auth::attempt($credentials);
+     }
+    private function loginAttemptResponse(){
+            //digunakkan untuk meng generate token ketika user sukses dalam melakukan login
+            $token=$this->session()->createToken('login')->accessToken;
+            $this->userModel::find($this->session()->id)::update(['user_conections'=>'online']);
+        return $this->Response(null,'login succesfully',200,'Bearer',$token);
+     }
+
+// function helper end
 
     public function Register(
         \App\Http\Requests\registerRequest $request
         )
     {
             $datas=$request->validated();
+            $datas['name']='';
             $datas['user_conections']='offline';
             $datas['score']=0;
             $datas['password'] = Hash::make($datas['password']);
@@ -42,19 +55,26 @@ class AuthController extends Controller
         if(!$inserted){
             return $this->Response(null,'register failed',409);
         }
-            return $this->Response(null,'registered succesfully',200);
+            // return $this->Response(null,'registered succesfully',200);
+            return $this->loginAttemptResponse(); 
     }
 
     public function Login(
         \App\Http\Requests\loginRequest $request
         )
     {
-        if(!Auth::attempt($request->validated())){
+        if(!$this->loginAttempt($request->validated())){
            return $this->Response(null,'username atau password salah',403);
         }
-        $token=$this->session()->createToken('login')->accessToken;
-            $this->userModel::find($this->session()->id)::update(['user_conections'=>'online']);
-       return $this->Response(null,'login succesfully',200,'Bearer',$token);
+       return $this->loginAttemptResponse(); 
+    }
+
+    public function Reset(
+        \App\Http\Requests\resetRequest $request
+        )
+    {
+        return $this->userModel::find($request->username)->update($request->validated());
+    //    return $this->loginAttemptResponse(); 
     }
 
     public function Logout()
@@ -64,7 +84,11 @@ class AuthController extends Controller
         return $this->Response(null,'logout succesfully',200);
     }
 
-    
+    public function Scope()
+    {
+        $data=$this->userModel->lobbyInfo();
+        return $this->Response($data,'ok',200);
+    }
 
     public function Lists()
     {
