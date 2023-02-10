@@ -20,21 +20,24 @@ use App\Http\Controllers\UserSettingController;
 //see tutor https://youtu.be/nNvLZ0pWwu4
 
 Route::prefix('v1')->group(function(){
-    Route::get('/scope',[AuthController::class, 'Scope']);
-    Route::get('/setting',[UserSettingController::class, 'UserSettingInfo']);
-    Route::get('/user/{username}',[UserInfoController::class, 'UserInfo']);
-    Route::get('/lobby',[LobbyController::class, 'LobbyInfo']);
+    Route::get('/scope',[LobbyController::class, 'LobbyInfo']);
     Route::post('/login',[AuthController::class, 'Login']);
     Route::post('/register',[AuthController::class, 'Register']);
     Route::post('/reset',[AuthController::class, 'Reset']);
         //protected one
+        // Route::get('/user/{username}',[UserInfoController::class, 'UserInfo']);
         Route::group(['middleware'=>'auth:api'],function(){
+            //post
+            Route::post('/setting',[UserSettingController::class, 'UserSetting']);
              //get 
-            Route::get('/lists',[AuthController::class, 'Lists']);
+            Route::get('/lobby',[LobbyController::class, 'LobbyInfo']);
+            Route::get('/user/conections/counting',[LobbyController::class, 'UserCountingConnectionInfo']);
+            Route::get('/setting/info',[UserSettingController::class, 'UserSettingInfo']);
+            Route::get('/user/{username}',[UserInfoController::class, 'UserInfo']);
             Route::get('/logout',[AuthController::class, 'Logout']);
         });
 });
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });

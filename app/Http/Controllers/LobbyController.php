@@ -31,4 +31,13 @@ public function LobbyInfo()
     return $this->Response( $this->userModel->lobbyInfo(),'success!',200 );
 }
 
+public function UserCountingConnectionInfo()
+{$user=$this->userModel;
+    $data=[
+        'online'=>$user->onlineCount(),
+        'offline'=>$user->offlineCount()
+    ];
+    return $this->Response( $data,'success!',200 );
+}
+
 } //end

@@ -34,8 +34,9 @@ class AuthController extends Controller
      }
     private function loginAttemptResponse(){
             //digunakkan untuk meng generate token ketika user sukses dalam melakukan login
-            $token=$this->session()->createToken('login')->accessToken;
-            $this->userModel::find($this->session()->id)::update(['user_conections'=>'online']);
+                $session=$this->session();
+            $token=$session->createToken('login')->accessToken;
+            $this->userModel::where('username',$session->username)->update(['user_conections'=>'online']);
         return $this->Response(null,'login succesfully',200,'Bearer',$token);
      }
 
@@ -49,6 +50,7 @@ class AuthController extends Controller
             $datas['name']='';
             $datas['user_conections']='offline';
             $datas['score']=0;
+            $datas['status']='status';
             $datas['password'] = Hash::make($datas['password']);
             // Hash::make($datas->password);
         $inserted=$this->userModel::create($datas);
@@ -56,6 +58,7 @@ class AuthController extends Controller
             return $this->Response(null,'register failed',409);
         }
             // return $this->Response(null,'registered succesfully',200);
+                $this->loginAttempt($request->only(['username','password'])) ;
             return $this->loginAttemptResponse(); 
     }
 
@@ -66,21 +69,25 @@ class AuthController extends Controller
         if(!$this->loginAttempt($request->validated())){
            return $this->Response(null,'username atau password salah',403);
         }
-       return $this->loginAttemptResponse(); 
+            return $this->loginAttemptResponse();
     }
 
     public function Reset(
         \App\Http\Requests\resetRequest $request
         )
     {
-        return $this->userModel::find($request->username)->update($request->validated());
-    //    return $this->loginAttemptResponse(); 
+        $request->password=Hash::make($request->password);
+        $reset_action=$this->userModel::where('username',$request->username)->update(['password'=>$request->password]);
+            if(!$reset_action)$this->Response(null,'username tidak ditemukan!',404);
+        //   return $this->Response(null,'reset successfully!',200); 
+        $this->loginAttempt($request->only(['username','password'])) ;
+            return $this->loginAttemptResponse();  
     }
 
     public function Logout()
-    {
-        $this->userModel::find($this->session()->id)::update(['user_conections'=>'offline']);
-        Auth::user()->token()->revoke();
+    { $session=$this->session();
+        $this->userModel::where('username',$session->username)->update(['user_conections'=>'offline']);
+        $session->token()->revoke();
         return $this->Response(null,'logout succesfully',200);
     }
 

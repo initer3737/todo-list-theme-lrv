@@ -32,9 +32,12 @@ public function UserSettingInfo()
     $data=$this->userModel::where('id',Auth::user()->id)->get();
     return $this->Response($data,'success',200);
 }
+
 public function UserSetting(\App\Http\Requests\UserSettingRequest $request)
 {
        //update data
+       return dd($request);
+    //    $this->userModel::where('id',Auth::user()->id)->update($request->validated());
 }
 
 } //end
