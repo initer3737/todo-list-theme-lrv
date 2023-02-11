@@ -79,9 +79,9 @@ class AuthController extends Controller
         $request->password=Hash::make($request->password);
         $reset_action=$this->userModel::where('username',$request->username)->update(['password'=>$request->password]);
             if(!$reset_action)$this->Response(null,'username tidak ditemukan!',404);
-        //   return $this->Response(null,'reset successfully!',200); 
-        $this->loginAttempt($request->only(['username','password'])) ;
-            return $this->loginAttemptResponse();  
+          return $this->Response(null,'reset successfully!',200); 
+        // $this->loginAttempt($request->only(['username','password'])) ;
+        //     return $this->loginAttemptResponse();  
     }
 
     public function Logout()

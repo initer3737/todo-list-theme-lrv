@@ -6,9 +6,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
-class UserSettingController extends Controller
+class Top3Controller extends Controller
 {
     function __construct(User $user)
     {
@@ -27,21 +26,10 @@ class UserSettingController extends Controller
     }
 
 // function helper end
-public function UserSettingInfo()
+public function Top3PlayerInfo()
 {
-    $data=$this->userModel::where('id',Auth::user()->id)->get();
-    return $this->Response($data,'success',200);
+    return $this->Response( $this->userModel->top3PlayerInfo(),'success!',200 );
 }
 
-public function UserSetting(\App\Http\Requests\UserSettingRequest $request)
-{
-        //file yang diupload user adalah foto jadi validasi dulu apakah foto user sudah diperbarui? 
-       //update 
-        if( !is_null($request->avatar) ){
-            //lakukan update
-        }
-       return dd($request);
-    //    $this->userModel::where('id',Auth::user()->id)->update($request->validated());
-}
 
 } //end

@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserInfoController;
 use App\Http\Controllers\LobbyController;
 use App\Http\Controllers\UserSettingController;
+use App\Http\Controllers\Top3Controller;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -31,6 +32,7 @@ Route::prefix('v1')->group(function(){
             Route::post('/setting',[UserSettingController::class, 'UserSetting']);
              //get 
             Route::get('/lobby',[LobbyController::class, 'LobbyInfo']);
+            Route::get('/top3/players/info',[Top3Controller::class, 'Top3PlayerInfo']);
             Route::get('/user/conections/counting',[LobbyController::class, 'UserCountingConnectionInfo']);
             Route::get('/setting/info',[UserSettingController::class, 'UserSettingInfo']);
             Route::get('/user/{username}',[UserInfoController::class, 'UserInfo']);

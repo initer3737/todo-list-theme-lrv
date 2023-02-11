@@ -36,8 +36,8 @@ class UserInfoController extends Controller
 
 // function helper end
 public function UserInfo(Request $request)
-{
-        $datas=DB::table('users')->select(DB::raw(' username,name,avatar,country,status,gender,user_conections,score,ROW_NUMBER() OVER(order by score desc) as ranking'))->get();
+{//UserInfo
+        $datas=$this->userModel->userInformation();
         $username=$request->username;
             $resData=$this->filterData($username,$datas);
       if(!$resData){

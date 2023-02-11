@@ -62,9 +62,31 @@ class User extends Authenticatable
     protected function scopeOfflineCount(){
         return User::select('user_conections')->where('user_conections','offline')->count();
     }
+      private function RankingUserInfo(string $selectQuery){
+            $emblem="case when ROW_NUMBER() over(order by score desc) <=3 then 'godong gedang'
+                        when ROW_NUMBER() over(order by score desc) <=6 then 'not bad noobs!'
+                        when ROW_NUMBER() over(order by score desc) <=8 then 'not yet mature'
+                        else 'rotten egg'
+                    END as emblem";
+          return DB::raw("{$selectQuery}, ROW_NUMBER() OVER(order by score desc) as ranking,{$emblem}");
+        }
     protected function scopeLobbyInfo(){
+                $queriSelectColumn='name,avatar,score';
             $datas=DB::table('users')
-                    ->select(DB::raw('name,avatar,score,ROW_NUMBER() OVER(order by score desc) as ranking'))->limit(10)->get();
+                    ->select($this->RankingUserInfo($queriSelectColumn))->limit(10)->get();
+                return $datas ;
+    }
+    protected function scopeTop3PlayerInfo(){
+            $queriSelectColumn='name,avatar,score';
+        $datas=DB::table('users')
+                ->select($this->RankingUserInfo($queriSelectColumn))->limit(3)->get();
+                return $datas ;
+    }
+
+    protected function scopeUserInformation(){
+            $queriSelectColumn='username,name,avatar,country,status,gender,user_conections,score,ROW_NUMBER() OVER(order by score desc) as ranking';
+        $datas=DB::table('users')
+                ->select($this->RankingUserInfo($queriSelectColumn))->get();
                 return $datas ;
     }
 }
