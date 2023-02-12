@@ -97,9 +97,5 @@ class AuthController extends Controller
         return $this->Response($data,'ok',200);
     }
 
-    public function Lists()
-    {
-        $data=Auth::user();
-        return $this->Response($data,'ok',200);
-    }
+    
 } //end

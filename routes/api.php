@@ -21,6 +21,7 @@ use App\Http\Controllers\Top3Controller;
 //see tutor https://youtu.be/nNvLZ0pWwu4
 
 Route::prefix('v1')->group(function(){
+    // Route::get('/user/session',[UserInfoController::class, 'UserInfoSession']);
     Route::get('/scope',[LobbyController::class, 'LobbyInfo']);
     Route::post('/login',[AuthController::class, 'Login']);
     Route::post('/register',[AuthController::class, 'Register']);
@@ -28,14 +29,17 @@ Route::prefix('v1')->group(function(){
         //protected one
         // Route::get('/user/{username}',[UserInfoController::class, 'UserInfo']);
         Route::group(['middleware'=>'auth:api'],function(){
-            //post
+                //post
             Route::post('/setting',[UserSettingController::class, 'UserSetting']);
-             //get 
+            Route::post('/game/update',[GameController::class, 'gameUpdateScore']);
+                //get 
+            Route::get('/game/score',[GameController::class, 'gameGetScore']);
             Route::get('/lobby',[LobbyController::class, 'LobbyInfo']);
             Route::get('/top3/players/info',[Top3Controller::class, 'Top3PlayerInfo']);
             Route::get('/user/conections/counting',[LobbyController::class, 'UserCountingConnectionInfo']);
             Route::get('/setting/info',[UserSettingController::class, 'UserSettingInfo']);
             Route::get('/user/{username}',[UserInfoController::class, 'UserInfo']);
+            Route::get('/session/profile',[UserInfoController::class, 'UserInfoSession']);
             Route::get('/logout',[AuthController::class, 'Logout']);
         });
 });

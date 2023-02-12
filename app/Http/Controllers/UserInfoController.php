@@ -35,6 +35,13 @@ class UserInfoController extends Controller
 }
 
 // function helper end
+public function UserInfoSession()
+    {
+        // $data=Auth::user()->id;
+        $data=$this->userModel::select('score','avatar','username')->where('username',Auth::user()->username)->get();
+        return $this->Response($data,'ok',200);
+    }
+
 public function UserInfo(Request $request)
 {//UserInfo
         $datas=$this->userModel->userInformation();
@@ -45,5 +52,8 @@ public function UserInfo(Request $request)
       }      
             return $this->Response($resData,'success',200);
 }
+
+
+
 
 } //end

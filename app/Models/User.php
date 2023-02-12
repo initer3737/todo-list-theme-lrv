@@ -77,7 +77,7 @@ class User extends Authenticatable
                 return $datas ;
     }
     protected function scopeTop3PlayerInfo(){
-            $queriSelectColumn='name,avatar,score';
+            $queriSelectColumn='name,avatar,score,user_conections';
         $datas=DB::table('users')
                 ->select($this->RankingUserInfo($queriSelectColumn))->limit(3)->get();
                 return $datas ;
