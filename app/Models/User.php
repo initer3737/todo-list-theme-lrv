@@ -71,7 +71,7 @@ class User extends Authenticatable
           return DB::raw("{$selectQuery}, ROW_NUMBER() OVER(order by score desc) as ranking,{$emblem}");
         }
     protected function scopeLobbyInfo(){
-                $queriSelectColumn='name,avatar,score';
+                $queriSelectColumn='name,avatar,score,username';
             $datas=DB::table('users')
                     ->select($this->RankingUserInfo($queriSelectColumn))->limit(10)->get();
                 return $datas ;
