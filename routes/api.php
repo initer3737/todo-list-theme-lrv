@@ -7,6 +7,7 @@ use App\Http\Controllers\UserInfoController;
 use App\Http\Controllers\LobbyController;
 use App\Http\Controllers\UserSettingController;
 use App\Http\Controllers\Top3Controller;
+use App\Http\Controllers\GameController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -31,9 +32,9 @@ Route::prefix('v1')->group(function(){
         Route::group(['middleware'=>'auth:api'],function(){
                 //post
             Route::post('/setting',[UserSettingController::class, 'UserSetting']);
-            Route::post('/game/update',[GameController::class, 'gameUpdateScore']);
+            Route::get('/game/update',[GameController::class, 'GameUpdateScore']);
                 //get 
-            Route::get('/game/score',[GameController::class, 'gameGetScore']);
+            Route::get('/game/score',[GameController::class, 'GameGetScore']);
             Route::get('/lobby',[LobbyController::class, 'LobbyInfo']);
             Route::get('/top3/players/info',[Top3Controller::class, 'Top3PlayerInfo']);
             Route::get('/user/conections/counting',[LobbyController::class, 'UserCountingConnectionInfo']);
