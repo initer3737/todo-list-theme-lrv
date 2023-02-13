@@ -32,7 +32,7 @@ Route::prefix('v1')->group(function(){
         Route::group(['middleware'=>'auth:api'],function(){
                 //post
             Route::post('/setting',[UserSettingController::class, 'UserSetting']);
-            Route::get('/game/update',[GameController::class, 'GameUpdateScore']);
+            Route::post('/game/update',[GameController::class, 'GameUpdateScore']);
                 //get 
             Route::get('/game/score',[GameController::class, 'GameGetScore']);
             Route::get('/lobby',[LobbyController::class, 'LobbyInfo']);
