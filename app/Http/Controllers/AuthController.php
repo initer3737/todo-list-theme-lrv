@@ -47,7 +47,7 @@ class AuthController extends Controller
         )
     {
             $datas=$request->validated();
-            $datas['name']='';
+            $datas['name']='your name';
             $datas['user_conections']='offline';
             $datas['score']=0;
             $datas['status']='status';

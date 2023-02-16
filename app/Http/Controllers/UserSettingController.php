@@ -25,11 +25,10 @@ class UserSettingController extends Controller
         ];
             return response()->json($res);
     }
-
 // function helper end
 public function UserSettingInfo()
-{
-    $data=$this->userModel::where('id',Auth::user()->id)->get();
+{       $selected=['password','name','avatar','username','country','status','gender','user_conections','score'];
+    $data=$this->userModel::select($selected)->where('id',Auth::user()->id)->get();
     return $this->Response($data,'success',200);
 }
 

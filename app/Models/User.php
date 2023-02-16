@@ -62,13 +62,17 @@ class User extends Authenticatable
     protected function scopeOfflineCount(){
         return User::select('user_conections')->where('user_conections','offline')->count();
     }
-      private function RankingUserInfo(string $selectQuery){
+      private function RankingUserInfo(string $selectQuery,$exceptSelect=null){
             $emblem="case when ROW_NUMBER() over(order by score desc) <=3 then 'godong gedang'
                         when ROW_NUMBER() over(order by score desc) <=6 then 'not bad noobs!'
                         when ROW_NUMBER() over(order by score desc) <=8 then 'not yet mature'
                         else 'rotten egg'
                     END as emblem";
-          return DB::raw("{$selectQuery}, ROW_NUMBER() OVER(order by score desc) as ranking,{$emblem}");
+                        $select=",ROW_NUMBER() OVER(order by score desc) as ranking,{$emblem}";
+                    if($exceptSelect.trim('') == '!emblem&&!ranking'){
+                        $select=',ROW_NUMBER() OVER(order by score desc) as ranking';
+                    }
+          return DB::raw("{$selectQuery} {$select}");
         }
     protected function scopeLobbyInfo(){
                 $queriSelectColumn='name,avatar,score,username';
@@ -77,14 +81,14 @@ class User extends Authenticatable
                 return $datas ;
     }
     protected function scopeTop3PlayerInfo(){
-            $queriSelectColumn='name,avatar,score,user_conections';
+            $queriSelectColumn='name,avatar,user_conections';
         $datas=DB::table('users')
-                ->select($this->RankingUserInfo($queriSelectColumn))->limit(3)->get();
+                ->select($this->RankingUserInfo($queriSelectColumn,'!emblem&&!ranking'))->limit(3)->get();
                 return $datas ;
     }
 
     protected function scopeUserInformation(){
-            $queriSelectColumn='username,name,avatar,country,status,gender,user_conections,score,ROW_NUMBER() OVER(order by score desc) as ranking';
+            $queriSelectColumn='username,name,avatar,country,status,gender,user_conections,score';
         $datas=DB::table('users')
                 ->select($this->RankingUserInfo($queriSelectColumn))->get();
                 return $datas ;
