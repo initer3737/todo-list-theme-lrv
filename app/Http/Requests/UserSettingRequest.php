@@ -25,7 +25,7 @@ class UserSettingRequest extends FormRequest
     {
         return [
             'username'=>['unique:users,username','min:6','nullable'],
-            'avatar'=>['nullable','file','mimes:png,jpg','image'],
+            'avatar'=>['nullable','file','image'],
             'country'=>['min:6','string','nullable'],
             'status'=>['string','min:6','nullable'],
             'gender'=>['min:0','max:6'],

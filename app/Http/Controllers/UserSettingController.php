@@ -29,35 +29,46 @@ class UserSettingController extends Controller
     }
 // function helper end
 public function UserSettingInfo()
-{       $selected=['password','name','username','country','status','gender','user_conections','score'];
-    $avatar=$this->userModel::find(Auth::user()->id)->avatar;
+{       $selected=['password','avatar','name','username','country','status','gender','user_conections','score'];
     $data=$this->userModel::select($selected)->where('id',Auth::user()->id)->get();
-        $data['avatar_link']="http://localhost:8000/storage/avatar/{$avatar}";
     return $this->Response($data,'success',200);
 }
 
+/**
+ * 
+ */
 public function UserSetting(\App\Http\Requests\UserSettingRequest $request)
 {
     $data=$this->userModel::find(Auth::user()->id);
+    $avatar=$request->avatar;
+    $formdata=$request->validated();
             //foto profile avatar
-        if( !is_null($request->avatar) ){
-            $avatar=$request->avatar;
+        if( !is_null($avatar) ){
             //name of foto
                 /**foto lawas di delete lalu ganti dengan yang baru */
             $foto=Auth::user()->username.\substr(uniqid(),3,-4).'.'.$avatar->extension();
                 $image_path ="/public/avatar/{$data['avatar']}";
                 if(Storage::exists($image_path))Storage::delete($image_path);
-            $data->update(['avatar'=>$foto]);
             $path=$avatar->storeAs("avatar",$foto,['disk'=>'public']);
+            $formdata['avatar']=$foto;
         }
-        if(is_null($data->avatar))$link=null;
-        if(!is_null($data->avatar))$link="http://localhost:8000/storage/avatar/{$data->avatar}";
-            //https://youtu.be/7Fn0ZSydCNk
-    $data=[
-        // 'foto'=>Storage::exists("public/avatar/{$data['avatar']}") ,
-        // 'url'=>$image_path
-    ];
-    return $this->Response($data,'success',200);
-}
+            //form data
+                //hash password
+               $formdata['password']=hash::make($formdata['password']); 
+            if(is_null($formdata['username']))$formdata['username']=$data->username;
+            if(is_null($formdata['name']))$formdata['name']=$data->name;
+            if(is_null($formdata['country']))$formdata['country']=$data->country;
+            if(is_null($formdata['status']))$formdata['status']=$data->status;
+            if(is_null($formdata['gender']))$formdata['gender']=$data->gender;
+            if(is_null($formdata['password']))$formdata['password']=$data->password;
+            if(is_null($formdata['avatar']))$formdata['avatar']=$data->avatar;
+       $data->update($formdata);  
+
+       if(!$data)return $this->Response(null,'failed to update',200);
+       return $this->Response(null,'update data success',200);
+    }
 
 } //end
+
+
+//https://youtu.be/7Fn0ZSydCNk
