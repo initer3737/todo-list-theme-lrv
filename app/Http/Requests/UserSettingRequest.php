@@ -24,12 +24,12 @@ class UserSettingRequest extends FormRequest
     public function rules()
     {
         return [
-            'username'=>['unique:users,username'],
-            'avatar'=>['nullable','file','mimes:png,jpg','image','size:20'],
-            'country'=>['min:6','string'],
-            'status'=>['string','min:6'],
+            'username'=>['unique:users,username','min:6','nullable'],
+            'avatar'=>['nullable','file','mimes:png,jpg','image'],
+            'country'=>['min:6','string','nullable'],
+            'status'=>['string','min:6','nullable'],
             'gender'=>['min:0','max:6'],
-            'name'=>['string','min:6'],
+            'name'=>['string','min:6','nullable'],
             'password'=>['required','min:5'],
             'password_confirm'=>['required','same:password']
         ];
