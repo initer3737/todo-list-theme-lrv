@@ -30,8 +30,8 @@ class UserSettingRequest extends FormRequest
             'status'=>['string','min:6','nullable'],
             'gender'=>['min:0','max:6'],
             'name'=>['string','min:6','nullable'],
-            'password'=>['required','min:5'],
-            'password_confirm'=>['required','same:password']
+            'password'=>['nullable','min:5'],
+            'password_confirm'=>['nullable','same:password']
         ];
     }
 }
