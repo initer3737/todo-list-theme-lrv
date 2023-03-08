@@ -71,6 +71,14 @@ class AuthController extends Controller
         }
             return $this->loginAttemptResponse();
     }
+    public function OfflinekanUser(
+        \App\Http\Requests\offlinekanRequest $request
+        )
+    {
+                $update=['user_conections'=>'offline'];
+            $query=$this->userModel::find($request->validated())->update($update);
+            return $this->Response(null,'update succesfully');;
+    }
 
     public function Reset(
         \App\Http\Requests\resetRequest $request

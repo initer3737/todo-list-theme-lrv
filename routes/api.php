@@ -24,6 +24,8 @@ use App\Http\Controllers\GameController;
 Route::prefix('v1')->group(function(){
     // Route::get('/user/session',[UserInfoController::class, 'UserInfoSession']);
     Route::get('/scope',[LobbyController::class, 'LobbyInfo']);
+            //posts
+    Route::post('/offlinekanuser',[AuthController::class, 'OfflinekanUser']);
     Route::post('/login',[AuthController::class, 'Login']);
     Route::post('/register',[AuthController::class, 'Register']);
     Route::post('/reset',[AuthController::class, 'Reset']);
